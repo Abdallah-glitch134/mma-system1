@@ -29,20 +29,13 @@ jobs:
       with:
         accept-android-sdk-licenses: true
 
-    - name: Prepare Web Assets & Build APK
+    - name: Build APK
       run: |
-        # 1. تنظيف البيئة تماماً
         rm -rf node_modules android www package.json package-lock.json capacitor.config.json
-
-        # 2. عزل ملفات الموقع داخل مجلد خاص (تجنباً للحلقة التكرارية)
         mkdir -p www
         cp -r index.html manifest.json sw.js *.png *.jpg *.jpeg *.js *.css www/ 2>/dev/null || true
-
-        # 3. تثبيت Capacitor
         npm init -y
         npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
-
-        # 4. كتابة ملف الإعدادات
         cat <<EOT > capacitor.config.json
         {
           "appId": "com.crocjaw.mma",
@@ -51,12 +44,8 @@ jobs:
           "bundledWebRuntime": false
         }
         EOT
-
-        # 5. إضافة الأندرويد ومزامنة الملفات
         npx cap add android
         npx cap sync
-
-        # 6. تجميع ملف APK
         cd android
         chmod +x gradlew
         ./gradlew assembleDebug
