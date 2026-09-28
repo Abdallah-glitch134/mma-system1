@@ -29,26 +29,34 @@ jobs:
       with:
         accept-android-sdk-licenses: true
 
-    - name: Accept All Licenses Explicitly
+    - name: Prepare Web Assets & Build APK
       run: |
-        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        # 1. تنظيف البيئة تماماً
+        rm -rf node_modules android www package.json package-lock.json capacitor.config.json
 
-    - name: Clean & Build APK
-      run: |
-        rm -f package.json package-lock.json capacitor.config.json
-        rm -rf node_modules android
+        # 2. عزل ملفات الموقع داخل مجلد خاص (تجنباً للحلقة التكرارية)
+        mkdir -p www
+        cp -r index.html manifest.json sw.js *.png *.jpg *.jpeg *.js *.css www/ 2>/dev/null || true
+
+        # 3. تثبيت Capacitor
         npm init -y
         npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
+
+        # 4. كتابة ملف الإعدادات
         cat <<EOT > capacitor.config.json
         {
           "appId": "com.crocjaw.mma",
           "appName": "MMA SYSTEM",
-          "webDir": ".",
+          "webDir": "www",
           "bundledWebRuntime": false
         }
         EOT
+
+        # 5. إضافة الأندرويد ومزامنة الملفات
         npx cap add android
         npx cap sync
+
+        # 6. تجميع ملف APK
         cd android
         chmod +x gradlew
         ./gradlew assembleDebug
@@ -58,3 +66,4 @@ jobs:
       with:
         name: MMA-SYSTEM-APK
         path: android/app/build/outputs/apk/debug/app-debug.apk
+        
