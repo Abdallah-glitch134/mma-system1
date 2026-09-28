@@ -1,0 +1,67 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      with:
+        accept-android-sdk-licenses: true
+
+    - name: Prepare Folder
+      run: |
+        rm -rf node_modules android www package.json package-lock.json capacitor.config.json
+        mkdir -p www
+        cp -r index.html manifest.json sw.js *.png *.jpg *.jpeg *.js *.css icons www/ 2>/dev/null || true
+
+    - name: Install Dependencies
+      run: |
+        npm init -y
+        npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
+
+    - name: Create Capacitor Config
+      run: |
+        cat <<EOT > capacitor.config.json
+        {
+          "appId": "com.crocjaw.mma",
+          "appName": "MMA SYSTEM",
+          "webDir": "www",
+          "bundledWebRuntime": false
+        }
+        EOT
+
+    - name: Build Android
+      run: |
+        npx cap add android
+        npx cap sync android
+        cd android
+        chmod +x gradlew
+        ./gradlew assembleDebug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: MMA-SYSTEM-APK
+        path: android/app/build/outputs/apk/debug/app-debug.apk
+        
