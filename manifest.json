@@ -1,0 +1,26 @@
+{
+  "name": "نظام MMA — المشروع S",
+  "short_name": "نظام MMA",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#06080c",
+  "theme_color": "#07090d",
+  "lang": "ar",
+  "dir": "rtl",
+  "description": "نظام تدريبي متكامل لمقاتل MMA مع مهارات قتالية وكالستنكس متدرج وخطة ذكية ولياقة وتعافي واختبارات أداء.",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "mma-system-project-s",
+  "version": "19.0.0",
+  "private": true,
+  "description": "MMA System V19 - zero-start MMA fighter game with daily challenges, seasons, trophies, titles, personal records and AI rank evaluation",
+  "scripts": {
+    "cap:add:android": "cap add android",
+    "cap:sync": "cap sync android",
+    "cap:open": "cap open android",
+    "android:build:debug": "cd android && gradlew.bat assembleDebug",
+    "android:build:release": "cd android && gradlew.bat assembleRelease"
+  },
+  "dependencies": {
+    "@capacitor/core": "^7.4.3",
+    "@capacitor/android": "^7.4.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.3"
+  }
+}
